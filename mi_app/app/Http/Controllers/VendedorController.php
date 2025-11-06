@@ -25,7 +25,7 @@ class VendedorController extends Controller
      */
     public function create()
     {
-        //
+        return view('vendedores.create');
     }
 
     /**
@@ -35,9 +35,20 @@ class VendedorController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
-        //
-    }
+{
+    $vendedor = new Vendedor();
+   // dd ($request);
+    $data = $request->validate([
+        'nombre' => ['required', 'string', 'max:255'],
+        'cargo' => ['required', 'string', 'max:255'],
+        'telefono' => ['required', 'string', 'max:255'],
+    ]);
+
+    Vendedor::create($data);
+
+    return redirect()->route('vendedores.index')->with('ok', 'Vendedor creado correctamente');
+}
+
 
     /**
      * Display the specified resource.
@@ -58,7 +69,9 @@ class VendedorController extends Controller
      */
     public function edit($id)
     {
-        //
+        $vendedor = \App\Models\Vendedor::findOrFail($id);
+        //dd($vendedor);
+        return view('vendedores.edit', compact('vendedor'));
     }
 
     /**
@@ -70,7 +83,17 @@ class VendedorController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $vendedor = \App\Models\Vendedor::findOrFail($id);
+        //dd($vendedor);
+
+    $data = $request->validate([
+        'nombre' => ['required','string','max:255'],
+        'cargo' => ['required','string','max:255'],
+        'telefono' => ['required','string','max:255'],
+    ]);
+    $vendedor->update($data);
+
+    return redirect()->route('vendedores.index')->with('ok', 'vendedor actualizado');
     }
 
     /**
@@ -81,6 +104,9 @@ class VendedorController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $vendedorDelete = \App\Models\Vendedor::findOrFail($id);
+        $vendedorDelete->delete();
+
+        return redirect()->route('vendedores.index')->with('ok', 'vendedor actualizado');
     }
 }
